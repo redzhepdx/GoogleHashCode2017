@@ -13,16 +13,9 @@ int main() {
 	std::vector<Video> videos;
 	std::vector<Cache> caches;
 
-	/*
-	std::vector<std::vector<int>> knapsackMatrix(100, std::vector<int>(100, 0));
-	knapsackMatrix[1][19] = 1;
-	knapsackMatrix[1][19] = knapsackMatrix[0][19];
-	std::cout << knapsackMatrix[1][19];
-	*/
-
 	//FILE READING
 	std::string line;
-	std::ifstream file("me_at_the_zoo.in");
+	std::ifstream file("kittens.in");
 	
 	if (file.is_open()) {
 
@@ -131,8 +124,14 @@ int main() {
 
 	for (int cacheID = 0; cacheID < cacheCount; cacheID++) {
 		KnapSack(caches[cacheID], endPoints, videos);
+		std::cout << "Cache_" + std::to_string(cacheID) + " stores that videos" << std::endl;
+		for (int vid = 0; vid < caches[cacheID].videos.size(); vid++) {
+			std::cout << caches[cacheID].videos[vid] << "  ";
+		}
+		std::cout << std::endl;
 	}
-	
+
+	/*
 	for (int i = 0; i < caches.size(); i++) {
 		std::cout << "Cache_" + std::to_string(i) + " stores that videos" << std::endl;
 		for (int vid = 0; vid < caches[i].videos.size(); vid++) {
@@ -140,6 +139,7 @@ int main() {
 		}
 		std::cout << std::endl;
 	}
+	*/
 
 	std::cout << "Completely Destroyed" << std::endl;
 

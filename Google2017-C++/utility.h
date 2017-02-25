@@ -35,22 +35,13 @@ void KnapSack(Cache& cache, std::vector<EndPoint>& endPoints, std::vector<Video>
 
 	for (auto endPandLat : cache.endPointsAndLatencies) {
 		for (auto vidAndReq : endPoints[endPandLat.first].videosAndRequests) {
-			//std::cout << endPandLat.first << std::endl;
 			if (std::find(relatedVideos.begin(), relatedVideos.end(), vidAndReq.first) == relatedVideos.end()) {
 				relatedVideos.push_back(vidAndReq.first);
 			}
 		}
 	}
 
-	/*
-	for (int i = 0; i < relatedVideos.size(); i++) {
-		std::cout << videos[relatedVideos[i]].size << " ";
-	}
-
-	getchar();
-	*/
-
-	std::vector<std::vector<int>> knapsackMatrix(cache.capacity + 1, std::vector<int>(relatedVideos.size() + 1, 0));
+	std::vector<std::vector<int>> knapsackMatrix(relatedVideos.size() + 1, std::vector<int>(cache.capacity + 1, 0));
 
 	//Knapsack Implementation
 	for (int curr_vid = 1; curr_vid < relatedVideos.size() + 1; curr_vid++) {
@@ -61,21 +52,16 @@ void KnapSack(Cache& cache, std::vector<EndPoint>& endPoints, std::vector<Video>
 			if ( curr_vid_size <= curr_cap) {
 
 				int curr_video_cost = computeCost(cache, endPoints, relatedVideos[curr_vid - 1]);
+				int total_cost_with_video = curr_video_cost + knapsackMatrix[curr_vid - 1][curr_cap - curr_vid_size];
 
-				if (curr_video_cost + knapsackMatrix[curr_vid - 1][curr_cap - curr_vid_size] > knapsackMatrix[curr_vid - 1][curr_cap]) {
-					knapsackMatrix[curr_vid][curr_cap] = curr_video_cost + knapsackMatrix[curr_vid - 1][curr_cap - curr_vid_size];
+				if (total_cost_with_video > knapsackMatrix[curr_vid - 1][curr_cap]) {
+					knapsackMatrix[curr_vid][curr_cap] = total_cost_with_video;
 				}
 				else {
 					knapsackMatrix[curr_vid][curr_cap] = knapsackMatrix[curr_vid - 1][curr_cap];
 				}
 			}
 			else {
-				/*
-				std::cout << curr_vid_size << " " << curr_cap << " " << cache.capacity << std::endl;
-				std::cout << "curr vid index : " << curr_vid << std::endl;
-				std::cout << "value : " << knapsackMatrix[curr_vid - 1][curr_cap] << std::endl;
-				getchar();
-				*/
 				knapsackMatrix[curr_vid][curr_cap] = knapsackMatrix[curr_vid - 1][curr_cap];
 			}
 		}
@@ -83,12 +69,12 @@ void KnapSack(Cache& cache, std::vector<EndPoint>& endPoints, std::vector<Video>
 	
 	//Find most efficient videos for the store inside cache
 	
+	std::cout << "Matrix Complete" << std::endl;
 	int value = knapsackMatrix[relatedVideos.size()][capacity];
 	int lastItemPos = relatedVideos.size();
-	int lastCapacityPos = capacity;
-
-
-	while (lastCapacityPos != 0 && lastCapacityPos != 0) {
+	int lastCapacityPos = cache.capacity;
+	
+	while (lastItemPos > 0 && lastCapacityPos > 0) {
 		//If last values came from up, It means this video isn't efficient for the store
 		if (knapsackMatrix[lastItemPos][lastCapacityPos] == knapsackMatrix[lastItemPos - 1][lastCapacityPos]) {
 			//Go check previous video
@@ -98,11 +84,11 @@ void KnapSack(Cache& cache, std::vector<EndPoint>& endPoints, std::vector<Video>
 		//Else , It means we have to store that video inside cache
 		else {
 			cache.videos.push_back(lastItemPos - 1);
-			lastItemPos = lastItemPos - 1;
 			lastCapacityPos = lastCapacityPos - videos[lastItemPos - 1].size;
+			lastItemPos = lastItemPos - 1;
 		}
 	}
-
+	
 	knapsackMatrix.clear();
 	relatedVideos.clear();
 }
