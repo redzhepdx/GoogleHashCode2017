@@ -131,16 +131,6 @@ int main() {
 		std::cout << std::endl;
 	}
 
-	/*
-	for (int i = 0; i < caches.size(); i++) {
-		std::cout << "Cache_" + std::to_string(i) + " stores that videos" << std::endl;
-		for (int vid = 0; vid < caches[i].videos.size(); vid++) {
-			std::cout << caches[i].videos[i] << "  ";
-		}
-		std::cout << std::endl;
-	}
-	*/
-
 	std::cout << "Completely Destroyed" << std::endl;
 
 	getchar();
